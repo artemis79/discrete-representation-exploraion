@@ -1,6 +1,7 @@
 import copy
 import cv2
-from gym_minigrid.minigrid import Grid
+import minigrid
+from minigrid.core.grid import Grid
 import numpy as np
 import torch
 

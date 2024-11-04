@@ -3,13 +3,13 @@ import os
 
 import cv2
 import numpy as np
-import gym
-from gym import Wrapper
-from gym_minigrid.wrappers import RGBImgPartialObsWrapper, ImgObsWrapper, ReseedWrapper
-from gym_minigrid.wrappers import FullyObsWrapper, OBJECT_TO_IDX
-from gym.wrappers import AtariPreprocessing, FrameStack, TransformObservation, TransformReward 
-from gym.wrappers.flatten_observation import FlattenObservation
-from gym.core import ObservationWrapper
+import gymnasium as gym
+from gymnasium import Wrapper
+from minigrid.wrappers import RGBImgPartialObsWrapper, ImgObsWrapper, ReseedWrapper
+from minigrid.wrappers import FullyObsWrapper, OBJECT_TO_IDX
+from gymnasium.wrappers import AtariPreprocessing, FrameStack, TransformObservation, TransformReward 
+from gymnasium.wrappers import FlattenObservation
+from gymnasium.core import ObservationWrapper
 import torch
 from stable_baselines3.common.monitor import Monitor
 
@@ -142,8 +142,9 @@ class Custom2DWrapper(Wrapper):
   def step(self, action):
     R = 0.0
     for _ in range(self.frame_skip):
-      obs, reward, done, info = self.env.step(action)
+      obs, reward, terminated, truncated, info = self.env.step(action)
       R += reward
+      done = terminated or truncated
       self.game_over = done
       if done:
         break
@@ -155,6 +156,8 @@ class Custom2DWrapper(Wrapper):
     return self.observation(obs)
 
   def observation(self, obs):
+    if isinstance(obs, tuple): 
+      obs = obs[0]
     # Resize the dimensions
     if self.rescale:
       obs = cv2.resize(obs, (self.rescale_size, self.rescale_size),

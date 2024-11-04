@@ -28,6 +28,7 @@ def get_comet_sweep_id():
   return os.environ.get('COMET_OPTIMIZER_ID', None)
 
 def init_experiment(project, args):
+  comet_sweep_id = get_comet_sweep_id()
   if args and args.wandb:
     import wandb
     global wandb
@@ -36,8 +37,7 @@ def init_experiment(project, args):
       settings=wandb.Settings(start_method='thread'), allow_val_change=True)
     args = wandb.config
 
-  comet_sweep_id = get_comet_sweep_id()
-  if comet_sweep_id or (args and args.comet_ml):
+  elif comet_sweep_id or (args and args.comet_ml):
     # import os
     # os.environ['COMET_LOGGING_FILE_LEVEL'] = 'DEBUG'
     # os.environ['COMET_LOGGING_FILE'] = './comet.log'

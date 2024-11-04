@@ -1,6 +1,6 @@
 from typing import Callable
 
-import gym
+import gymnasium as gym
 
 from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 from stable_baselines3.common.policies import ActorCriticPolicy

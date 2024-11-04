@@ -151,7 +151,12 @@ def train(args, encoder_model=None):
       batch_data['acts'].append(act)
 
       # Take the action
-      next_obs, reward, done, info = env.step(act)
+      step_result = env.step(act)
+      if len(step_result) == 4:
+        next_obs, reward, done, info = env.step(act)
+      else: 
+        next_obs, reward, terminated, truncated, info = env.step(act)
+        done = terminated or truncated
 
       done = done or env_change
       next_obs = torch.from_numpy(next_obs).float()
@@ -162,7 +167,6 @@ def train(args, encoder_model=None):
       batch_data['gammas'].append(
         torch.tensor(args.gamma * (1 - done)).float())
 
-      
       # Log achievement info for crafter
       if 'achievements' in info:
         for k, v in info['achievements'].items():
@@ -291,12 +295,12 @@ if __name__ == '__main__':
     args.env_change_freq = int(args.env_change_freq)
 
   # Setup logging
-  args = init_experiment('discrete-mbrl-model-free', args)
-
+  log_args = init_experiment('discrete-mbrl-model-free', args)
+  print(log_args)
   if args.wandb:
-    args.update({'policy_hidden': interpret_layer_sizes(args.policy_hidden)},
+    log_args.update({'policy_hidden': interpret_layer_sizes(args.policy_hidden)},
                 allow_val_change=True)
-    args.update({'critic_hidden': interpret_layer_sizes(args.critic_hidden)},
+    log_args.update({'critic_hidden': interpret_layer_sizes(args.critic_hidden)},
                 allow_val_change=True)
   else:
     args.policy_hidden = interpret_layer_sizes(args.policy_hidden)

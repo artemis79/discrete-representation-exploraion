@@ -1,7 +1,8 @@
 import math
 
+import gymnasium as gym
 from einops import rearrange
-from gym import spaces
+from gymnasium import spaces
 import numpy as np
 import torch
 from torch import nn

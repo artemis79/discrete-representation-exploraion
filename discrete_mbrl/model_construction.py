@@ -269,10 +269,12 @@ def make_ae(input_dim, embedding_dim, filter_size, version='2'):
 
 
 def args_update(args, key, value):
-  if args.wandb:
-    args.update({key: value}, allow_val_change=True)
-  else:
-    setattr(args, key, value)
+  # if args.wandb:
+  #   args[key] = value
+  #   args.update({key: value}, allow_val_change=True)
+  # else:
+  #   setattr(args, key, value)
+  setattr(args, key, value)
 
   log_param_updates(args, {key: value})
 

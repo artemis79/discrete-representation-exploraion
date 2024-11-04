@@ -4,7 +4,6 @@ import os
 import psutil
 
 from einops import rearrange
-from gym.envs.mujoco import MujocoEnv
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
@@ -133,6 +132,7 @@ def log_param_updates(args, params):
   if args.wandb:
     import wandb
     if not isinstance(wandb.config, wandb.sdk.lib.preinit.PreInitObject):
+        wandb.init()
         wandb.config.update(params, allow_val_change=True)
   elif args.comet_ml:
     import comet_ml
