@@ -22,10 +22,21 @@ def run_sweep(sweep_id):
     del os.environ['COMET_OPTIMIZER_ID']
   opt = Optimizer(sweep_id, verbose=0)
   config = opt.status()
+  print(config)
+
   command = config['parameters']['sweep_command']['values'][0].split()
+
+  for parameter in config['parameters']:
+    # Skip sweep specific arguments like sweep_command
+    if 'sweep' in parameter:
+      continue
+    command.append('--' + parameter)
+    if not isinstance(config['parameters'][parameter]['values'][0], bool):
+      command.append(str(config['parameters'][parameter]['values'][0]))
   
   environ = os.environ.copy()
   environ['COMET_OPTIMIZER_ID'] = opt.id
+
 
   # This is adapted from comet_optimize.py
 
@@ -55,7 +66,6 @@ def run_sweep(sweep_id):
         if proc.returncode is None:
           proc.kill()
 
-  print()
   results = opt.status()
   for key in ['algorithm', 'status']:
     print('   ', '%s:' % key, results[key])
@@ -67,6 +77,7 @@ def run_sweep(sweep_id):
       (results['endTime'] - results['startTime']) / 1000.0,
       'seconds',
     )
+
 
 def create_sweep(config_path):
   with open(config_path, 'r') as f:
@@ -80,6 +91,7 @@ def create_sweep(config_path):
   if 'name' in config:
     config['parameters']['sweep_name'] = config['name']
 
+  
   final_configs = []
   config_stack = [config]
   while len(config_stack) > 0:

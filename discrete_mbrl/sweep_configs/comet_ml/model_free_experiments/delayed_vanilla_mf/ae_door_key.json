@@ -19,7 +19,7 @@
     "comet_ml": True,
     "ae_recon_loss": True,
     "ae_er_train": True,
-    "device": "cuda",
+    "device": "cpu",
     "log_freq": 10000,
     "learning_rate": 0.0003,
     "batch_size": 256,

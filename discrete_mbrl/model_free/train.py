@@ -25,6 +25,7 @@ def train(args, encoder_model=None):
   act_dim = act_space.n
   sample_obs = env.reset()
   sample_obs = preprocess_obs([sample_obs])
+  print('sample', sample_obs.shape[1:])
 
   freeze_encoder = False
 
@@ -129,8 +130,7 @@ def train(args, encoder_model=None):
       'obs', 'states', 'next_obs', 'rewards', 'acts', 'gammas']}
     
     # ae_model.cpu()
-    # policy.cpu()
-
+    # policy.cpu()  
     for _ in range(args.batch_size):
       with torch.no_grad():
         env_change = \
@@ -153,9 +153,9 @@ def train(args, encoder_model=None):
       # Take the action
       step_result = env.step(act)
       if len(step_result) == 4:
-        next_obs, reward, done, info = env.step(act)
+        next_obs, reward, done, info = step_result
       else: 
-        next_obs, reward, terminated, truncated, info = env.step(act)
+        next_obs, reward, terminated, truncated, info = step_result
         done = terminated or truncated
 
       done = done or env_change
@@ -291,12 +291,12 @@ if __name__ == '__main__':
   mf_arg_parser = make_mf_arg_parser()
   args = get_args(mf_arg_parser)
 
+
   if args.env_change_freq.isdecimal():
     args.env_change_freq = int(args.env_change_freq)
 
   # Setup logging
   log_args = init_experiment('discrete-mbrl-model-free', args)
-  print(log_args)
   if args.wandb:
     log_args.update({'policy_hidden': interpret_layer_sizes(args.policy_hidden)},
                 allow_val_change=True)

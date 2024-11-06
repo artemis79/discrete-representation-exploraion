@@ -148,14 +148,15 @@ class Custom2DWrapper(Wrapper):
       self.game_over = done
       if done:
         break
-    return self.observation(obs), R, done, info
+    return self._observation(obs), R, done, info
 
   def reset(self, **kwargs):
     # NoopReset
-    obs = self.env.reset(**kwargs)
-    return self.observation(obs)
+    # obs, info = self.env.reset(**kwargs)
+    obs, info = self.env.reset()
+    return self._observation(obs)
 
-  def observation(self, obs):
+  def _observation(self, obs):
     if isinstance(obs, tuple): 
       obs = obs[0]
     # Resize the dimensions
@@ -223,9 +224,9 @@ class MiniGridSimpleStochActionWrapper(Wrapper):
 
   def step(self, action):
     true_action = self.action(action)
-    obs, reward, done, info = self.env.step(true_action)
+    obs, reward, terminated, truncated, info = self.env.step(true_action)
     info = {'true_action': true_action, **info}
-    return obs, reward, done, info
+    return obs, reward, terminated, truncated, info
 
   def enable_stochasticity(self):
     self.stoch_enabled = True
@@ -342,11 +343,13 @@ class MinigridRGBImgObsWrapper(ObservationWrapper):
 
     self.observation_space = gym.spaces.Dict(
       {**self.observation_space.spaces, 'image': new_image_space})
+    
 
   def observation(self, obs):
     env = self.unwrapped
-    rgb_img = env.render(mode='rgb_array',
-      highlight=self.highlight, tile_size=self.tile_size)
+    # rgb_img = env.render(
+    #   highlight=self.highlight, tile_size=self.tile_size)
+    rgb_img = env.render()
     return {**obs, 'image': rgb_img}
 
 class CompactObsWrapper(gym.ObservationWrapper):
@@ -607,6 +610,7 @@ def check_env_name(env_name):
 
 def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
              monitor=False, max_steps=None):
+  
   if env_name.lower() == 'minigrid-simple-stochastic':
     wrappers = [
       lambda env: MiniGridSimpleStochActionWrapper(env, n_acts=3),
@@ -614,7 +618,7 @@ def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
       ImgObsWrapper,
       Custom2DWrapper
     ]
-    env = gym.make('MiniGrid-Empty-6x6-v0')
+    env = gym.make('MiniGrid-Empty-6x6-v0', render_mode='rgb_array')
     env.unwrapped.max_steps = max_steps or 10000
   elif env_name.lower().startswith('minigrid-key-stochastic'):
     # 6 Levels of difficulty
@@ -706,6 +710,9 @@ def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
     else:
       seeds = [41]
 
+    env = gym.make('MiniGrid-DoorKey-8x8-v0', render_mode='rgb_array')
+    env.reset()
+    env.unwrapped.max_steps = max_steps or 10000
     wrappers = [
       lambda env: DisallowActionWrapper(env, [4]),
       MiniGridSimpleStochActionWrapper,
@@ -714,12 +721,12 @@ def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
       scale_wrapper,
       lambda env: ReseedWrapper(env, seeds=seeds)
     ]
-    
+
     if compact:
       wrappers.append(FlattenObservation)
 
-    env = gym.make('MiniGrid-DoorKey-8x8-v0')
-    env.unwrapped.max_steps = max_steps or 10000
+    
+
   elif 'minigrid' in env_name.lower():
     scale_wrapper = Custom2DWrapper
     if '-fullobs' in env_name:
@@ -816,7 +823,9 @@ def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
     recorder_wrapper = lambda env: TrajectoryRecorderWrapper(
       env, replay_buffer, buffer_lock, extra_info)
     wrappers.append(recorder_wrapper)
-    
+  
+  print(wrappers)
   for wrapper in wrappers:
     env = wrapper(env)
+
   return env
