@@ -18,4 +18,5 @@ dependencies = [
     "imageio==2.35.1",
     "mujoco==2.2.2",
     "wandb>=0.18.7",
+    "comet-ml>=3.47.3",
 ]

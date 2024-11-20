@@ -6,6 +6,7 @@ import psutil
 from einops import rearrange
 from gym.envs.mujoco import MujocoEnv
 import numpy as np
+import comet_ml
 import torch
 from torch.utils.data import DataLoader
 from tqdm import tqdm

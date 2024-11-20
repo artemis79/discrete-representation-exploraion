@@ -6,6 +6,7 @@ from collections import defaultdict
 from comet_ml.api import API
 import pandas as pd
 from tqdm import tqdm
+import os
 
 
 parser = argparse.ArgumentParser()
@@ -61,10 +62,11 @@ def experiment_to_rows(experiment, metrics_names, param_names, index='step'):
 if __name__ == '__main__':
   args = parser.parse_args()
 
-  with open('../../.comet.config', 'r') as f:
-    api_key = f.read()
-  api_key = api_key[api_key.find('=') + 1:]
-  api = API(api_key)
+  # with open('../../.comet.config', 'r') as f:
+  #   api_key = f.read()
+  # api_key = api_key[api_key.find('=') + 1:]
+  # api = API(api_key)
+  api = API()
   api.use_cache(True)
 
   print('Looking for experiments...')

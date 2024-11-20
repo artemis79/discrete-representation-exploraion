@@ -45,6 +45,8 @@ def init_experiment(project, args):
     import comet_ml
     global comet_ml
 
+    workspace = 'mrahmani'
+
     global experiment_module_name # Used for capturing log output
 
     if experiment_module_name is None:
@@ -64,7 +66,7 @@ def init_experiment(project, args):
         project = project['values'][0]
 
       experiment = opt.next(
-        project_name=project, workspace='[REDACTED]')
+        project_name=project, workspace=workspace)
       
       error_log = log_capture_string.getvalue()
 
@@ -73,12 +75,12 @@ def init_experiment(project, args):
         if 'was already uploaded' in error_log.lower():
           print('Creating an `ExistingExperiment` after error')
           new_experiment = comet_ml.ExistingExperiment(
-            project_name=project, workspace='[REDACTED]',
+            project_name=project, workspace=workspace,
             experiment_key=experiment.get_key())
         else:
           print('Creating an `OfflineExperiment` after error')
           new_experiment = comet_ml.OfflineExperiment(
-            project_name=project, workspace='[REDACTED]')
+            project_name=project, workspace=workspace)
 
         # Get parameters from original experiment
         api = comet_ml.api.API()
@@ -110,7 +112,7 @@ def init_experiment(project, args):
 
     else:
       experiment = comet_ml.Experiment(
-        project_name=project, workspace='[REDACTED]')
+        project_name=project, workspace=workspace)
       error_log = log_capture_string.getvalue()
 
       if 'run will not be logged' in error_log.lower():
@@ -118,11 +120,11 @@ def init_experiment(project, args):
         if 'was already uploaded' in error_log.lower():
           print('Creating an `ExistingExperiment` after error')
           experiment = comet_ml.ExistingExperiment(
-            project_name=project, workspace='[REDACTED]')
+            project_name=project, workspace=workspace)
         else:
           print('Creating an `OfflineExperiment` after error')
           experiment = comet_ml.OfflineExperiment(
-            project_name=project, workspace='[REDACTED]')
+            project_name=project, workspace=workspace)
 
       comet_ml.config.set_global_experiment(experiment)
       experiment.log_parameters(args)
