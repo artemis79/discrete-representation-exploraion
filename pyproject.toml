@@ -1,0 +1,21 @@
+[project]
+name = "discrete-representation-exploraion"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "einops==0.8.0",
+    "gym-minigrid==1.1.0",
+    "gym==0.25.1",
+    "numpy==1.24.4",
+    "opencv-python>=4.8.1.78",
+    "psutil==6.1.0",
+    "stable-baselines3==2.2.0",
+    "torch==2.4.1",
+    "tqdm==4.67.0",
+    "glfw==2.7.0",
+    "imageio==2.35.1",
+    "mujoco==2.2.2",
+    "wandb>=0.18.7",
+]
