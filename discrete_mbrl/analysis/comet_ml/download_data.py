@@ -74,7 +74,6 @@ if __name__ == '__main__':
   print(f'Found {len(experiments)} experiments')
 
   exp_keys = [exp.id for exp in experiments]
-
   metrics = args.history_vars if args.history_vars is not None else DEFAULT_METRICS
   params = args.params if args.params is not None else DEFAULT_PARAMS
   columns = metrics + params + ['experiment_key']
@@ -86,7 +85,7 @@ if __name__ == '__main__':
   for experiment in tqdm(experiments):
     new_rows = experiment_to_rows(
       experiment, metrics, params, index='step')
-
+    
     if len(new_rows) > 0:
       n_valid_runs += 1
       rows.extend(new_rows)
@@ -94,7 +93,10 @@ if __name__ == '__main__':
   print('Saving data to csv...')
   df = pd.DataFrame(rows)
   df.reset_index(drop=True, inplace=True)
-  df.to_csv(f'data/{args.project}_data.csv')
+  if "model-free" in args.project:
+    df.to_csv(f'notebooks/minigrid_model_free/data/{args.project}_data.csv')
+  else:
+    df.to_csv(f'notebooks/{args.project}_data.csv')
 
   print(f'{n_valid_runs}/{len(experiments)} runs saved.')
   print(f'{len(rows)} rows saved.')
