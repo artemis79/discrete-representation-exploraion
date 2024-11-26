@@ -23,7 +23,7 @@
     "log_freq": 10000,
     "learning_rate": 0.0003,
     "batch_size": 256,
-    "mf_steps": 2500000,
+    "mf_steps": 1000000,
     "embedding_dim": 64,
     "env_max_steps": 1000,
     "n_ae_updates": 8,
