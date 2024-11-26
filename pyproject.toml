@@ -10,7 +10,7 @@ dependencies = [
     "gym==0.25.1",
     "numpy==1.24.4",
     "opencv-python>=4.8.1.78",
-    "psutil==6.1.0",
+    "psutil==5.9.5",
     "stable-baselines3==2.2.0",
     "torch==2.4.1",
     "tqdm==4.67.0",
@@ -19,4 +19,8 @@ dependencies = [
     "mujoco==2.2.2",
     "wandb>=0.18.7",
     "comet-ml>=3.47.3",
+    "matplotlib>=3.7.5",
+    "seaborn>=0.13.2",
+    "scipy>=1.10.1",
+    "ipykernel>=6.29.5",
 ]
