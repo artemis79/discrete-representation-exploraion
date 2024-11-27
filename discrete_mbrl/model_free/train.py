@@ -18,9 +18,30 @@ from training_helpers import *
 from model_construction import *
 from rl_utils import *
 
+def increment_counts(counts, state, act):
+  state_np_arr = state.detach().cpu().numpy()[0]
+  counts[:, :, act] = counts[:, :, act] + state_np_arr
+
+def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
+  state_np_arr = state.detach().cpu().numpy()[0]
+  n_s = 0
+  n_a = 0
+
+  for a in range(num_act):
+    count_act = counts[:, :, a]
+    state_counts = count_act * state_np_arr
+    state_counts = np.sum(state_counts, axis=0)
+    n = np.min(state_counts)
+    n_s += n
+    if a == act:
+      n_a = n
+  return beta * np.sqrt(2 * np.log(n_s)/n_a)
+
+
 
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
+
   # env = FreezeOnDoneWrapper(env, max_count=1)
   act_space = env.action_space
   act_dim = act_space.n
@@ -57,6 +78,12 @@ def train(args, encoder_model=None):
     mlp_kwargs['n_embeds'] = args.codebook_size
     mlp_kwargs['embed_dim'] = args.embedding_dim
     input_dim = args.embedding_dim * ae_model.n_latent_embeds
+
+    # Define count array
+    if args.count:
+      act_space = env.action_space
+      counts = np.ones((args.codebook_size, args.embedding_dim, act_space.n))
+
   else:
     input_dim = ae_model.latent_dim
 
@@ -129,6 +156,9 @@ def train(args, encoder_model=None):
     batch_data = {k: [] for k in [
       'obs', 'states', 'next_obs', 'rewards', 'acts', 'gammas']}
     
+    
+        
+    
     # ae_model.cpu()
     # policy.cpu()
 
@@ -143,6 +173,7 @@ def train(args, encoder_model=None):
         state = ae_model.encode(
           curr_obs.unsqueeze(0).to(model_device), return_one_hot=True)
         
+        
         act_logits = policy(state)
         act_dist = Categorical(logits=act_logits)
         act = act_dist.sample().cpu()
@@ -151,8 +182,19 @@ def train(args, encoder_model=None):
       batch_data['states'].append(state.squeeze(0))
       batch_data['acts'].append(act)
 
+      if args.ae_model_type == 'vqvae' and args.count:
+        act_index = act.item()
+        increment_counts(counts, state, act_index)
+
+
       # Take the action
       next_obs, reward, done, info = env.step(act)
+
+      if args.ae_model_type == 'vqvae' and args.count:
+        act_index = act.item()
+        r_intrins = calculate_intrinsic_reward(counts, state, act_index, act_dim)
+        reward = reward + r_intrins
+
 
       done = done or env_change
       next_obs = torch.from_numpy(next_obs).float()
