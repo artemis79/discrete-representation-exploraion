@@ -28,7 +28,10 @@ cd discrete-representation-exploraion/
 uv venv
 source .venv/bin/activate
 uv add requests[socks]
+uv add urllib3
 uv pip sync pyproject.toml
 
 
 cd discrete_mbrl/
+python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/ae_door_key.json" 
+
