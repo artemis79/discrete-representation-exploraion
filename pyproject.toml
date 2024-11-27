@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 dependencies = [
     "einops==0.8.0",
-    "gym-minigrid==1.1.0",
+    "gym-minigrid==1.0.1",
     "gym==0.25.1",
     "numpy==1.24.4",
     "opencv-python>=4.8.1.78",
