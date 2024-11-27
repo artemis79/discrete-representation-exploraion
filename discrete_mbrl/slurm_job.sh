@@ -3,8 +3,11 @@
 #SBATCH --cpus-per-task=1 
 #SBATCH --gpus-per-node=1 
 #SBATCH --mem=16G 
-#SBATCH --time=0-2:59'
+#SBATCH --time=0-2:59
+#SBATCH --array=1-30
 
+
+echo "Starting task $SLURM_ARRAY_TASK_ID"
 # SOCKS5 Proxy
 if [ "$SLURM_TMPDIR" != "" ]; then
     echo "Setting up SOCKS5 proxy..."
@@ -33,5 +36,18 @@ uv pip sync pyproject.toml
 
 
 cd discrete_mbrl/
-python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/ae_door_key.json" 
+
+if [[ "$1" == "ae_door_key" ]]; then
+   python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/ae_door_key.json"
+elif [[ "$1" == "softmax_ae_door_key" ]]; then
+   python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/softmax_ae_door_key.json" 
+elif [[ "$1" == "fta_ae_door_key" ]]; then
+   python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/fta_ae_door_key.json"
+elif [[ "$1" == "vqvae_door_key" ]]; then
+   python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/vqvae_door_key.json"
+else
+   echo "Not a valid sweep"
+fi
+
+
 
