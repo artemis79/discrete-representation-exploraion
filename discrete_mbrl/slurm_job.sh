@@ -30,10 +30,9 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 cd discrete-representation-exploraion/
 uv venv
 source .venv/bin/activate
-uv add requests[socks]
-uv add urllib3
-uv pip sync pyproject.toml
 
+uv pip sync pyproject.toml
+uv add 'requests[socks]' 
 
 cd discrete_mbrl/
 
