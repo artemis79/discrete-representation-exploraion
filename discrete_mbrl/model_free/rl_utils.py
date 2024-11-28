@@ -43,7 +43,11 @@ def make_mf_arg_parser():
 
   parser.add_argument('--e2e_loss_binary', type=int, default=None)
 
-  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False)
+  # Count arguments
+  parser.add_argument('--count', action='store_true')
+
+  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False)
+
  
   return parser
 
