@@ -191,7 +191,7 @@ def train(args, encoder_model=None):
       # Take the action
       next_obs, reward, done, info = env.step(act)
 
-      if args.ae_model_type == 'vqvae' and args.count:
+      if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
         act_index = act.item()
         r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
         reward = reward + r_intrins
