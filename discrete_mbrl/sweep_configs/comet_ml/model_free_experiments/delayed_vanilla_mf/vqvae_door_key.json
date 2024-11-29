@@ -37,6 +37,7 @@
     "filter_size": 6,
     "codebook_size": 256,
 
+
     "env_name": "minigrid-door-key-stochastic",
     "stochastic": "categorical"
   }

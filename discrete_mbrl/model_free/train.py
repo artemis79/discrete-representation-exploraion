@@ -333,6 +333,7 @@ if __name__ == '__main__':
   # Parse args
   mf_arg_parser = make_mf_arg_parser()
   args = get_args(mf_arg_parser)
+  print(args.beta)
 
   if args.env_change_freq.isdecimal():
     args.env_change_freq = int(args.env_change_freq)
