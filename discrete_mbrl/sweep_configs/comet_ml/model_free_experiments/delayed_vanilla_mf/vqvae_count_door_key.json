@@ -33,6 +33,7 @@
       "ppo_iters": 10,
       "ppo_clip": 0.2,
       "rl_start_step": 500000,
+      "beta": 0.1,
   
       "ae_model_type": "vqvae",
       "filter_size": 6,

@@ -82,7 +82,7 @@ def train(args, encoder_model=None):
     # Define count array
     if args.count:
       act_space = env.action_space
-      counts = np.ones((args.codebook_size, args.embedding_dim, act_space.n))
+      counts = np.ones((args.codebook_size, args.filter_size**2, act_space.n))
 
   else:
     input_dim = ae_model.latent_dim
@@ -162,6 +162,9 @@ def train(args, encoder_model=None):
     # ae_model.cpu()
     # policy.cpu()
 
+    # Define mid counts
+    mid_counts = np.zeros((args.codebook_size, args.filter_size**2, act_space.n))
+
     for _ in range(args.batch_size):
       with torch.no_grad():
         env_change = \
@@ -182,17 +185,15 @@ def train(args, encoder_model=None):
       batch_data['states'].append(state.squeeze(0))
       batch_data['acts'].append(act)
 
-      if args.ae_model_type == 'vqvae' and args.count:
-        act_index = act.item()
-        increment_counts(counts, state, act_index)
-
+      # Increment mid counts
+      increment_counts(mid_counts, state, act)
 
       # Take the action
       next_obs, reward, done, info = env.step(act)
 
       if args.ae_model_type == 'vqvae' and args.count:
         act_index = act.item()
-        r_intrins = calculate_intrinsic_reward(counts, state, act_index, act_dim)
+        r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
         reward = reward + r_intrins
 
 
@@ -288,6 +289,9 @@ def train(args, encoder_model=None):
     batch_data = {k: torch.stack(v).to(args.device) \
       for k, v in batch_data.items()}
 
+    ## Count Updates ##
+    if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
+        counts += mid_counts
 
     ### PPO Updates ###
     

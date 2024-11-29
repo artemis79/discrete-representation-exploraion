@@ -45,6 +45,7 @@ def make_mf_arg_parser():
 
   # Count arguments
   parser.add_argument('--count', action='store_true')
+  parser.add_argument('--beta', type=int, default=0.1)
 
   parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False)
 
