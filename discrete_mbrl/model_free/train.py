@@ -163,7 +163,8 @@ def train(args, encoder_model=None):
     # policy.cpu()
 
     # Define mid counts
-    mid_counts = np.zeros((args.codebook_size, args.filter_size**2, act_space.n))
+    if args.ae_model_type == 'vqvae' and args.count:
+      mid_counts = np.zeros((args.codebook_size, args.filter_size**2, act_space.n))
 
     for _ in range(args.batch_size):
       with torch.no_grad():
@@ -267,6 +268,7 @@ def train(args, encoder_model=None):
           score = np.exp(np.nanmean(np.log(1 + percents), -1)) - 1
           run_stats['achievement/score'].append(score)
 
+        print(run_stats)
         log_stats(run_stats, step, args)
         run_stats = defaultdict(list)
 
@@ -333,7 +335,6 @@ if __name__ == '__main__':
   # Parse args
   mf_arg_parser = make_mf_arg_parser()
   args = get_args(mf_arg_parser)
-  print(args.beta)
 
   if args.env_change_freq.isdecimal():
     args.env_change_freq = int(args.env_change_freq)
