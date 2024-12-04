@@ -46,6 +46,8 @@ elif [[ "$1" == "vqvae_door_key" ]]; then
    python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/vqvae_door_key.json"
 elif [[ "$1" == "vqvae_count_door_key" ]]; then
    python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf/vqvae_count_door_key.json"
+elif [[ "$1" == "vqvae_count_door_key_sweep" ]]; then
+   python comet_sweep.py --sweep_id "new" --config "sweep_configs/comet_ml/model_free_experiments/delayed_vanilla_mf_sweep/vqvae_count_door_key.json"
 else
    echo "Not a valid sweep"
 fi
