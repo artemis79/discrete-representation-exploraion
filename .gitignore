@@ -160,6 +160,7 @@ cython_debug/
 /wandb
 /figures
 /Data
+/discrete_mbrl/model_free/wandb
 
 # Output files
 *.csv
