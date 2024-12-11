@@ -5,6 +5,8 @@
 #SBATCH --mem=16G 
 #SBATCH --time=0-2:59
 #SBATCH --array=1-30
+#SBATCH --output=model_free/vanilla_count_model_free_%j.out
+
 
 
 echo "Starting task $SLURM_ARRAY_TASK_ID"
