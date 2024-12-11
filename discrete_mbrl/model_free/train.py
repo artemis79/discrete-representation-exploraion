@@ -38,10 +38,23 @@ def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
   return beta * np.sqrt(2 * np.log(n_s)/n_a)
 
 
+def get_door_pos(env):
+  for x in range(env.width):
+      for y in range(env.height):
+          obj = env.grid.get(x, y)
+          if obj and obj.type == 'door':
+              return x, y
+          
+  return None, None
+          
+
+def get_door_status(env, x, y):
+  obj = env.grid.get(x, y)
+  return obj.is_open
+
 
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
-
   # env = FreezeOnDoneWrapper(env, max_count=1)
   act_space = env.action_space
   act_dim = act_space.n
@@ -149,6 +162,8 @@ def train(args, encoder_model=None):
   ep_rewards = []
   n_batches = int(np.ceil(args.mf_steps / args.batch_size))
   step = 0
+  episode = 0
+
   for batch in tqdm(range(n_batches)):
     ae_model.eval()
     policy.eval()
@@ -192,6 +207,17 @@ def train(args, encoder_model=None):
       # Take the action
       next_obs, reward, done, info = env.step(act)
 
+      # Get the status of agent, door and key
+      if args.log_pos and 'door' in args.env_name and step >= args.rl_start_step:
+        agent_pos = env.agent_pos
+        door_x, door_y = get_door_pos(env)
+        door_status = get_door_status(env, door_x, door_y)
+        key_status = env.carrying and env.carrying.type == 'key'
+        if not key_status:
+          key_status = False
+        log_pos(agent_pos, door_status, key_status, step, episode, args)
+      
+
       if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
         act_index = act.item()
         r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
@@ -221,6 +247,7 @@ def train(args, encoder_model=None):
 
       # Update the current obs
       if done:
+        episode += 1
         if replay_buffer is not None:
           replay_buffer.add_step(
             next_obs, act, next_obs, batch_data['rewards'][-1], batch_data['gammas'][-1])
@@ -248,6 +275,7 @@ def train(args, encoder_model=None):
         print('\n--- Episode Stats ---')
         print(f'Reward: {sum(ep_rewards)}')
         print(f'Length: {len(ep_rewards)}')
+        print(f'Episode: {episode}')
 
         ep_rewards = []
         ep_info = defaultdict(list)
@@ -259,6 +287,8 @@ def train(args, encoder_model=None):
         'reward': reward,
       })
 
+      # print(run_stats['reward'], step)
+
       # Log and reset logging data
       if step > 0 and step % args.log_freq == 0:
         # Compute score for crafter
@@ -268,7 +298,6 @@ def train(args, encoder_model=None):
           score = np.exp(np.nanmean(np.log(1 + percents), -1)) - 1
           run_stats['achievement/score'].append(score)
 
-        print(run_stats)
         log_stats(run_stats, step, args)
         run_stats = defaultdict(list)
 
@@ -303,6 +332,7 @@ def train(args, encoder_model=None):
 
       for k, v in loss_dict.items():
         run_stats[k].append(v.item())
+
 
 
     ### AE Reconstruction Loss ###

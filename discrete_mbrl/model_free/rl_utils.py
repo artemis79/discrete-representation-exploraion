@@ -45,9 +45,12 @@ def make_mf_arg_parser():
 
   # Count arguments
   parser.add_argument('--count', action='store_true')
-  parser.add_argument('--beta', type=int, default=0.1)
+  parser.add_argument('--beta', type=float, default=0.1)
+  parser.add_argument('--log_pos', action='store_true')
 
-  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False)
+
+
+  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False, log_pos=False)
 
  
   return parser
@@ -98,6 +101,13 @@ def log_stats(stats, step, args):
   mean_stats = {k: v for k, v in mean_stats.items() if not np.isnan(v)}
   mean_stats['step'] = step
   log_metrics(mean_stats, args, step=step)
+
+def log_pos(position, door_status, key_status, step, episode, args):
+  stats = {"x_pos": position[0], "y_pos": position[1], "door_unlocked": door_status, "carry_key": key_status, "episode": episode, "step": step}
+  # Create a pretty log string
+  log_str = f'\n--- Step {step} ---\n'
+  stats['step'] = step
+  log_metrics(stats, args, step=step)
   
 def to_device(tensors, device):
   return [t.to(device) for t in tensors]
