@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --account=def-mbowling
+#SBATCH --account=rrg-mbowling-ad
 #SBATCH --cpus-per-task=1 
 #SBATCH --gpus-per-node=1 
 #SBATCH --mem=16G 
@@ -14,7 +14,7 @@ if [ "$SLURM_TMPDIR" != "" ]; then
     ssh -q -N -T -f -D 8888 `echo $SSH_CONNECTION | cut -d " " -f 3`
     export ALL_PROXY=socks5h://localhost:8888
 fi
-
+ 
 module load python/3.10 StdEnv/2023 gcc opencv/4.8.1 swig
 
 cd $SLURM_TMPDIR
