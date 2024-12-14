@@ -157,7 +157,7 @@ cython_debug/
 # Run logs
 /runs
 /videos
-/wandb
+*/wandb
 /figures
 /Data
 /discrete_mbrl/model_free/wandb
