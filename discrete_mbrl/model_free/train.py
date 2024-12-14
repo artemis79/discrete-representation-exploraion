@@ -202,7 +202,8 @@ def train(args, encoder_model=None):
       batch_data['acts'].append(act)
 
       # Increment mid counts
-      increment_counts(mid_counts, state, act)
+      if args.ae_model_type == 'vqvae' and args.count:
+        increment_counts(mid_counts, state, act)
 
       # Take the action
       next_obs, reward, done, info = env.step(act)
