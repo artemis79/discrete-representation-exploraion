@@ -209,7 +209,7 @@ def train(args, encoder_model=None):
       next_obs, reward, done, info = env.step(act)
 
       # Get the status of agent, door and key
-      if args.log_pos and 'door' in args.env_name and step >= args.rl_start_step:
+      if args.log_pos and 'door' in args.env_name:
         agent_pos = env.agent_pos
         door_x, door_y = get_door_pos(env)
         door_status = get_door_status(env, door_x, door_y)
