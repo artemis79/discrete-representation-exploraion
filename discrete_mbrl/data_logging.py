@@ -32,7 +32,7 @@ def init_experiment(project, args):
     import wandb
     global wandb
     
-    wandb.init(project=project, config=args, tags=args.tags, mode="offline",
+    wandb.init(project=project, config=args, tags=args.tags,
       settings=wandb.Settings(start_method='thread'), allow_val_change=True)
     args = wandb.config
 
