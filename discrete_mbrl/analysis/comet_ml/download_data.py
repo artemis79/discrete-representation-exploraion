@@ -25,7 +25,7 @@ DEFAULT_METRICS = ['n_step', 'eval_policies',
         'random_state_distrib_kl_div', 'random_state_distrib_kl_div_mean',
         'goal_state_distrib_kl_div', 'goal_state_distrib_kl_div_mean',
         'explore_right_state_distrib_kl_div', 'explore_right_state_distrib_kl_div_mean']
-DEFAULT_PARAMS = ['codebook_size', 'filter_size', 'eval_policy', 'env_name', 'ae_model_type']
+DEFAULT_PARAMS = ['codebook_size', 'filter_size', 'eval_policy', 'env_name', 'ae_model_type', 'rl_start_step', 'ae_recon_loss', 'count', 'beta']
 
 
 def experiment_to_rows(experiment, metrics_names, param_names, index='step'):
@@ -35,6 +35,7 @@ def experiment_to_rows(experiment, metrics_names, param_names, index='step'):
     new_metric_data = experiment.get_metrics(metric_name)
     metric_data.extend(new_metric_data)
   param_data = experiment.get_parameters_summary()
+  print(metrics_names)
 
   # Gather parameter values
   experiment_key = experiment.id
