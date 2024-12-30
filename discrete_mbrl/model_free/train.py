@@ -219,6 +219,11 @@ def train(args, encoder_model=None):
         log_pos(agent_pos, door_status, key_status, step, episode, args)
       
 
+      ## For experiments that don't use extrinsic reward
+      if args.rm_reward:
+        reward = 0
+
+      
       if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
         act_index = act.item()
         r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
