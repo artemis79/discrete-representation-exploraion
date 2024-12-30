@@ -32,6 +32,10 @@ def run_to_rows(run, metrics_names, param_names, index='step'):
         list[dict]: A list of dictionaries containing the combined data.
     """
     # Fetch history (metrics over time)
+    # metric_data = run.history(keys=metrics_names, samples=100000)
+
+    # Gather parameter values
+    metrics_names = metrics_names
     metric_data = run.scan_history(keys=metrics_names)
     param_data = run.config
     print(run.name)
@@ -40,16 +44,17 @@ def run_to_rows(run, metrics_names, param_names, index='step'):
     run_id = run.id
     param_vals = {name: param_data.get(name, None) for name in param_names}
     param_vals.update({'run_id': run_id})
+    print(param_vals)
 
     # Coalesce metric data into rows
     rows = []
     for row in metric_data:
+        row.update(param_vals)
         rows.append(row)
-    # df = pd.DataFrame(list(metric_data))
-    
+    df = pd.DataFrame(list(metric_data))
 
     return rows
-
+    
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -70,24 +75,25 @@ if __name__ == '__main__':
     metrics = args.history_vars if args.history_vars else DEFAULT_METRICS
     params = args.params if args.params else DEFAULT_PARAMS
     columns = metrics + params + ['run_id']
+    
+    output_path = f"analysis/wandb/{args.project}_data.csv"
 
-    print('Querying run data...')
-    rows = []
+# Create or overwrite the CSV file with headers
+    with open(output_path, 'w') as f:
+        pd.DataFrame(columns=metrics + ['beta', 'run_id']).to_csv(f, index=False)
+
     n_valid_runs = 0
     for run in tqdm(runs):
         try:
+            # Process the run and convert it into rows
             new_rows = run_to_rows(run, metrics, params, index='step')
             if new_rows:
                 n_valid_runs += 1
-                rows.extend(new_rows)
+
+                # Append the new rows to the CSV file
+                pd.DataFrame(new_rows).to_csv(output_path, mode='a', header=False, index=False)
         except Exception as e:
             print(f"Error fetching data for run {run.id}: {e}")
-
-    print('Saving data to CSV...')
-    df = pd.DataFrame(rows)
-    df.reset_index(drop=True, inplace=True)
-    output_path = f"{args.project}_data.csv"
-    df.to_csv(output_path, index=False)
 
     print(f'{n_valid_runs}/{len(runs)} runs saved.')
     print(f'Data saved to {output_path}.')
