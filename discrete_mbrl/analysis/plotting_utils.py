@@ -118,18 +118,26 @@ def standardize_env_name(name):
 def set_fig_labels(xlabel, ylabel, xsci=False, ysci=False, ax=None):
   """
   Set the labels for the x and y axes of the current figure.
-  If style is 'sci', use scientific notation for the y axis.
+  If style is 'sci', use scientific notation for the axis.
   """
   if ax is None:
     ax = plt.gca()
 
   if xsci:
+    plt.draw()
     ax.ticklabel_format(
-      style='sci', axis='x', scilimits=(0,0), useMathText=True)
+      style='sci', axis='x', scilimits=(-3,3), useMathText=True)
     plt.savefig(BytesIO())
     offset = ax.get_xaxis().get_offset_text()
-    ax.set_xlabel(f'{xlabel} ({offset.get_text()})')
-    offset.set_visible(False)
+    x_min, x_max = ax.get_xlim()
+    x_offset = int(np.floor(np.log10((x_max - x_min) / 2)))
+    print(offset.get_text())
+    # ax.set_xlabel(f'{xlabel} ({x_offset})')
+    # offset.set_visible(False)
+
+    ax.set_xlabel(f'{xlabel} ($\\times 10^{x_offset}$)' if x_offset != 0 else xlabel)
+    ax.get_xaxis().get_offset_text().set_visible(False)
+    
   else:
     ax.set_xlabel(xlabel)
 
