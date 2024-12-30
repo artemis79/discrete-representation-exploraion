@@ -47,10 +47,11 @@ def make_mf_arg_parser():
   parser.add_argument('--count', action='store_true')
   parser.add_argument('--beta', type=float, default=0.1)
   parser.add_argument('--log_pos', action='store_true')
+  parser.add_argument('--rm_reward', action='store_true')
 
 
 
-  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False, log_pos=False)
+  parser.set_defaults(ae_recon_loss=False, ppo_norm_advantages=False, ortho_init=False, count=False, log_pos=False, rm_reward=False)
 
  
   return parser
