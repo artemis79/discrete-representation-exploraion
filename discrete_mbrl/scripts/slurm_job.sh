@@ -30,11 +30,11 @@ git clone https://github.com/artemis79/discrete-representation-exploraion
 #Install uv 
 curl -LsSf https://astral.sh/uv/install.sh | sh
 cd discrete-representation-exploraion/
-uv venv
-source .venv/bin/activate
 
-uv pip sync pyproject.toml
-uv add 'requests[socks]' 
+uv venv $SLURM_TMPDIR/.venv --python 3.10
+source $SLURM_TMPDIR/.venv/bin/activate
+uv pip install -r pyproject.toml --cache-dir $SLURM_TMPDIR/uv/cache
+uv pip install requests[socks] 
 
 cd discrete_mbrl/
 
@@ -55,6 +55,7 @@ elif [[ "$1" == "sweep_id" ]]; then
 else
    echo "Not a valid sweep"
 fi
+
 
 
 
