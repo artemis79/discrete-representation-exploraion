@@ -715,7 +715,19 @@ def make_env(env_name, replay_buffer=None, buffer_lock=None, extra_info=None,
     if compact:
       wrappers.append(FlattenObservation)
 
-    env = gym.make('MiniGrid-DoorKey-8x8-v0')
+    # Configure the size of the environment
+    if '-5x5' in env_name.lower():
+      env = gym.make('MiniGrid-DoorKey-5x5-v0')
+    elif '-6x6' in env_name.lower():
+      env = gym.make('MiniGrid-DoorKey-6x6-v0')
+    elif '-8x8' in env_name.lower():
+      env = gym.make('MiniGrid-DoorKey-8x8-v0')
+    elif '-16x16' in env_name.lower():
+      env = gym.make('MiniGrid-DoorKey-16x16-v0')
+    else:
+      env = gym.make('MiniGrid-DoorKey-8x8-v0')
+
+
     env.unwrapped.max_steps = max_steps or 10000
   elif 'minigrid' in env_name.lower():
     scale_wrapper = Custom2DWrapper
