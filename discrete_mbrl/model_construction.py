@@ -112,7 +112,7 @@ def make_ae_v2(input_dim, embedding_dim=None, filter_size=None):
   strides = (2, 2, 2)
   padding = (1, 0, 0)
 
-  if input_dim[1] in (48, 56, 64):
+  if input_dim[1] in (48, 56, 64, 128):
     strides = (2, 2, 1)
   elif input_dim[1] == 54:
     strides = (2, 1, 2)
@@ -287,6 +287,15 @@ def construct_ae_model(input_dim, args, load=True, latent_activation=False):
       input_dim, args.embedding_dim, args.filter_size, version=args.ae_model_version)
     test_input = torch.ones(1, *input_dim, dtype=torch.float32)
     encoder_out_shape = encoder(test_input).shape[1:]
+    encoder_out = encoder(test_input)
+
+    # Test decoder
+    decoder_out_shape = decoder(encoder_out).shape[1:]
+    print('input_shape      ', test_input.shape)
+    print('encoder_out_shape', encoder_out_shape)
+    print('decoder_out_shape', decoder_out_shape)
+
+
     encoder_type = 'dense' if (len(encoder_out_shape) == 1) else 'cnn'
     
   if args.ae_model_type in CONTINUOUS_ENCODER_TYPES:
