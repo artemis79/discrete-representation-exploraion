@@ -1,7 +1,7 @@
 {
     "name": "Delayed RL Door Key | VQVAE | Best",
   
-    "project": "model-free-minigrid",
+    "project": "model-free-minigrid-16x16",
   
     "command": "python model_free/train.py",
   
@@ -38,7 +38,7 @@
       "filter_size": 6,
       "codebook_size": 256,
   
-      "env_name": "minigrid-door-key-stochastic",
+      "env_name": "minigrid-door-key-stochastic-16x16",
       "stochastic": "categorical", 
 
       "beta": {
