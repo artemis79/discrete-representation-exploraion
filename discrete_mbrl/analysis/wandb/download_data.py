@@ -32,26 +32,25 @@ def run_to_rows(run, metrics_names, param_names, index='step'):
         list[dict]: A list of dictionaries containing the combined data.
     """
     # Fetch history (metrics over time)
-    # metric_data = run.history(keys=metrics_names, samples=100000)
+
 
     # Gather parameter values
     metrics_names = metrics_names
     metric_data = run.scan_history(keys=metrics_names)
     param_data = run.config
-    print(run.name)
 
     # Gather parameter values
     run_id = run.id
     param_vals = {name: param_data.get(name, None) for name in param_names}
     param_vals.update({'run_id': run_id})
-    print(param_vals)
+ 
 
     # Coalesce metric data into rows
     rows = []
     for row in metric_data:
         row.update(param_vals)
         rows.append(row)
-    df = pd.DataFrame(list(metric_data))
+
 
     return rows
     
@@ -62,10 +61,12 @@ if __name__ == '__main__':
     parser.add_argument('--project', type=str, required=True, help='W&B project name.')
     parser.add_argument('--history_vars', nargs='*', type=str, default=None, help='Metrics to fetch.')
     parser.add_argument('--params', nargs='*', type=str, default=None, help='Parameters to fetch.')
+    parser.add_argument('--output_path', type=str, default=None)
+    # parser.add_argument('--rm_reward', action='store_true')
     args = parser.parse_args()
 
     # Initialize wandb API
-    api = wandb.Api(timeout=29)
+    api = wandb.Api(timeout=39)
 
     print('Fetching runs...')
     runs = api.runs(f"{args.entity}/{args.project}")
