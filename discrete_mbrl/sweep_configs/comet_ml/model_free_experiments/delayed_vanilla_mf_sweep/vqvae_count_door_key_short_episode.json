@@ -22,7 +22,6 @@
       "ae_er_train": True,
       "device": "cuda",
       "log_freq": 10000,
-      "learning_rate": 0.0003,
       "batch_size": 256,
       "mf_steps": 1500000,
       "embedding_dim": 64,
@@ -44,6 +43,11 @@
       "beta": {
         "type": "discrete",
         "values": [0, 0.01, 0.001]
+      },
+
+      "learning_rate": {
+        "type": "discrete",
+        "values": [0.00003, 0.0003, 0.003]
       }
 
     }
