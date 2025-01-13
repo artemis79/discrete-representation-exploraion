@@ -24,7 +24,7 @@
       "log_freq": 10000,
       "learning_rate": 0.0003,
       "batch_size": 256,
-      "mf_steps": 1500000,
+      "mf_steps": 2000000,
       "embedding_dim": 64,
       "env_max_steps": 1000,
       "n_ae_updates": 8,
@@ -32,7 +32,7 @@
       "ppo_value_coef": 0.5,
       "ppo_iters": 10,
       "ppo_clip": 0.2,
-      "rl_start_step": 500000,
+      "rl_start_step": 1000000,
   
       "ae_model_type": "vqvae",
       "filter_size": 6,
