@@ -160,6 +160,7 @@ def train(args, encoder_model=None):
   curr_obs = torch.from_numpy(curr_obs).float()
   # Batch next_obs, rewards, acts, gammas
   ep_rewards = []
+  ep_intrinsic_rewards = []
   n_batches = int(np.ceil(args.mf_steps / args.batch_size))
   step = 0
   episode = 0
@@ -233,6 +234,8 @@ def train(args, encoder_model=None):
       done = done or env_change
       next_obs = torch.from_numpy(next_obs).float()
       ep_rewards.append(reward)
+      # ep_intrinsic_rewards.append(r_intrins)
+      
 
       batch_data['next_obs'].append(next_obs)
       batch_data['rewards'].append(torch.tensor(reward).float())
@@ -270,6 +273,7 @@ def train(args, encoder_model=None):
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
         run_stats['ep_reward'].append(np.sum(ep_rewards))
+        # run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
         
         # Compute score for crafter
         if 'crafter' in args.env_name.lower():
@@ -284,6 +288,7 @@ def train(args, encoder_model=None):
         print(f'Episode: {episode}')
 
         ep_rewards = []
+        ep_intrinsic_rewards = []
         ep_info = defaultdict(list)
         
       else:
