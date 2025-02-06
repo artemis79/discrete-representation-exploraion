@@ -161,6 +161,7 @@ def train(args, encoder_model=None):
   # Batch next_obs, rewards, acts, gammas
   ep_rewards = []
   ep_intrinsic_rewards = []
+  ep_reward_plus = []
   n_batches = int(np.ceil(args.mf_steps / args.batch_size))
   step = 0
   episode = 0
@@ -208,6 +209,7 @@ def train(args, encoder_model=None):
 
       # Take the action
       next_obs, reward, done, info = env.step(act)
+      env_reward = reward
 
       # Get the status of agent, door and key
       if args.log_pos and 'door' in args.env_name:
@@ -233,8 +235,9 @@ def train(args, encoder_model=None):
 
       done = done or env_change
       next_obs = torch.from_numpy(next_obs).float()
-      ep_rewards.append(reward)
-      # ep_intrinsic_rewards.append(r_intrins)
+      ep_rewards.append(env_reward)
+      ep_intrinsic_rewards.append(r_intrins)
+      ep_reward_plus.append(reward)
       
 
       batch_data['next_obs'].append(next_obs)
@@ -273,6 +276,8 @@ def train(args, encoder_model=None):
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
         run_stats['ep_reward'].append(np.sum(ep_rewards))
+        run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
+        run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
         # run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
         
         # Compute score for crafter
@@ -289,6 +294,7 @@ def train(args, encoder_model=None):
 
         ep_rewards = []
         ep_intrinsic_rewards = []
+        ep_reward_plus = []
         ep_info = defaultdict(list)
         
       else:
