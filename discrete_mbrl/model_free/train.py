@@ -210,6 +210,8 @@ def train(args, encoder_model=None):
       # Take the action
       next_obs, reward, done, info = env.step(act)
       env_reward = reward
+      r_intrins = 0
+
 
       # Get the status of agent, door and key
       if args.log_pos and 'door' in args.env_name:
@@ -226,7 +228,6 @@ def train(args, encoder_model=None):
       if args.rm_reward:
         reward = 0
 
-      
       if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
         act_index = act.item()
         r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
@@ -276,9 +277,9 @@ def train(args, encoder_model=None):
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
         run_stats['ep_reward'].append(np.sum(ep_rewards))
-        # run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
-        # run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
-        # run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
+        run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
+        run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
+        run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
         
         # Compute score for crafter
         if 'crafter' in args.env_name.lower():
