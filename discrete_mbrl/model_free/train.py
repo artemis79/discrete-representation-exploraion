@@ -276,8 +276,8 @@ def train(args, encoder_model=None):
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
         run_stats['ep_reward'].append(np.sum(ep_rewards))
-        run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
-        run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
+        # run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
+        # run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
         # run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
         
         # Compute score for crafter
