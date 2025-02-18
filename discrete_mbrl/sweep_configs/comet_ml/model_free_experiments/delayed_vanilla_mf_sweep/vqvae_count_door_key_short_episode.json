@@ -1,7 +1,7 @@
 {
     "name": "Delayed RL Door Key | VQVAE | Best",
   
-    "project": "model-free-minigrid-short",
+    "project": "model-free-minigrid-short-v2",
   
     "command": "python model_free/train.py",
   
@@ -42,7 +42,7 @@
 
       "beta": {
         "type": "discrete",
-        "values": [0, 0.01, 0.001]
+        "values": [0, 0.01, 0.001, 0.0001]
       },
 
       "learning_rate": {
