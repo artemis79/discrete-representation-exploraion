@@ -216,6 +216,8 @@ def train(args, encoder_model=None):
       # Get the status of agent, door and key
       if args.log_pos and 'door' in args.env_name:
         agent_pos = env.agent_pos
+        agent_dir = env.agent_dir
+        
         door_x, door_y = get_door_pos(env)
         door_status = get_door_status(env, door_x, door_y)
         key_status = env.carrying and env.carrying.type == 'key'

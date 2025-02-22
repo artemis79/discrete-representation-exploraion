@@ -103,8 +103,8 @@ def log_stats(stats, step, args):
   mean_stats['step'] = step
   log_metrics(mean_stats, args, step=step)
 
-def log_pos(position, door_status, key_status, step, episode, args):
-  stats = {"x_pos": position[0], "y_pos": position[1], "door_unlocked": door_status, "carry_key": key_status, "episode": episode, "step": step}
+def log_pos(position, direction, door_status, key_status, step, episode, args):
+  stats = {"x_pos": position[0], "y_pos": position[1], "direction": direction, "door_unlocked": door_status, "carry_key": key_status, "episode": episode, "step": step}
   # Create a pretty log string
   log_str = f'\n--- Step {step} ---\n'
   stats['step'] = step
