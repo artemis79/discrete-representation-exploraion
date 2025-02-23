@@ -217,13 +217,13 @@ def train(args, encoder_model=None):
       if args.log_pos and 'door' in args.env_name:
         agent_pos = env.agent_pos
         agent_dir = env.agent_dir
-        
+
         door_x, door_y = get_door_pos(env)
         door_status = get_door_status(env, door_x, door_y)
         key_status = env.carrying and env.carrying.type == 'key'
         if not key_status:
           key_status = False
-        log_pos(agent_pos, door_status, key_status, step, episode, args)
+        log_pos(agent_pos, agent_dir, door_status, key_status, step, episode, args)
       
 
       ## For experiments that don't use extrinsic reward
