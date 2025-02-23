@@ -1,6 +1,6 @@
 name: Delayed RL Door Key | VQVAE | Best
 
-project: model-free-minigrid
+project: model-free-minigrid-v2
 
 program: model_free/train.py
 
