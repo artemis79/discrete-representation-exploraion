@@ -14,52 +14,78 @@ metric:
 parameters:
   wandb:
     value: True
+
   count:
     value: True
+
   ae_recon_loss:
     value: True
+
   ae_er_train:
     value: True
+
+  log_pos:
+    value: True
+
   device:
     value: "cuda"
+
   log_freq:
     value: 10000
+  
   learning_rate:
     value: 0.0003
+
   batch_size:
     value: 256
+
   mf_steps: 
     value: 1000000
+
   embedding_dim:
     value: 64
+
   env_max_steps:
     value: 1000
+
   n_ae_updates:
     value: 8
+
   ppo_batch_size: 
     value: 64
+
   ppo_value_coef: 
     value: 0.5
+
   ppo_iters:
     value: 10
+
   ppo_clip:
     value: 0.2
+
   rl_start_step:
     value: 500000
+
   beta:
-    value: 0.01
+    value: 0.001
+
   ae_model_type:
     value: "vqvae"
+
   filter_size:
     value: 6
+
   codebook_size:
     value: 256
+
   env_name:
     value: "minigrid-door-key-stochastic"
+
   stochastic:
     value: "categorical"
 
-
+  rm_reward:
+    values: [True, False]
 command:
   - ${program}
   - ${args_no_boolean_flags}
