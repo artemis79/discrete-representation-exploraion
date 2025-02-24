@@ -13,7 +13,7 @@
       "retryAssignLimit": 4
     },
   
-    "trials": 3,
+    "trials": 30,
   
     "parameters": {
       "comet_ml": True,
@@ -42,12 +42,12 @@
 
       "beta": {
         "type": "discrete",
-        "values": [0.001]
+        "values": [0.001, 0.01, 0.0, 0.0001]
       },
 
       "learning_rate": {
         "type": "discrete",
-        "values": [0.00003]
+        "values": [0.00003, 0.0003, 0.003]
       }
 
     }
