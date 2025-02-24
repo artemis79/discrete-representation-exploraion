@@ -13,7 +13,7 @@
       "retryAssignLimit": 4
     },
   
-    "trials": 30,
+    "trials": 3,
   
     "parameters": {
       "comet_ml": True,
@@ -25,7 +25,7 @@
       "batch_size": 256,
       "mf_steps": 1500000,
       "embedding_dim": 64,
-      "env_max_steps": 100,
+      "env_max_steps": 500,
       "n_ae_updates": 8,
       "ppo_batch_size": 64,
       "ppo_value_coef": 0.5,
@@ -42,12 +42,12 @@
 
       "beta": {
         "type": "discrete",
-        "values": [0, 0.01, 0.001, 0.0001]
+        "values": [0.001]
       },
 
       "learning_rate": {
         "type": "discrete",
-        "values": [0.00003, 0.0003, 0.003]
+        "values": [0.00003]
       }
 
     }
