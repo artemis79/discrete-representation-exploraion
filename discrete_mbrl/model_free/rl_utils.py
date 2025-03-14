@@ -48,6 +48,8 @@ def make_mf_arg_parser():
   parser.add_argument('--beta', type=float, default=0.1)
   parser.add_argument('--log_pos', action='store_true')
   parser.add_argument('--rm_reward', action='store_true')
+  parser.add_argument('--agg_func_const', type=float, default=0)
+
 
 
 

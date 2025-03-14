@@ -1,6 +1,8 @@
 from collections import defaultdict
 import os
 import sys
+from scipy.special import softmax
+
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 sys.path.insert(1, os.path.join(sys.path[0], '../..'))
 
@@ -31,7 +33,10 @@ def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
     count_act = counts[:, :, a]
     state_counts = count_act * state_np_arr
     state_counts = np.sum(state_counts, axis=0)
-    n = np.min(state_counts)
+
+    # Use softmax as aggregate function
+    n =  softmax(state_counts)
+    # n = np.min(state_counts)
     n_s += n
     if a == act:
       n_a = n
