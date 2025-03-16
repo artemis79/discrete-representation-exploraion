@@ -36,6 +36,7 @@ def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
 
     # Use softmax as aggregate function
     n =  softmax(state_counts)
+    print(n, state_counts)
     # n = np.min(state_counts)
     n_s += n
     if a == act:
