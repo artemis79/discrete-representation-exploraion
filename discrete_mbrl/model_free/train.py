@@ -35,7 +35,8 @@ def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
     state_counts = np.sum(state_counts, axis=0)
 
     # Use softmax as aggregate function
-    n =  softmax(state_counts)
+    w =  softmax(state_counts)
+    n = np.dot(w, state_counts)
     print(n, state_counts)
     # n = np.min(state_counts)
     n_s += n
@@ -57,6 +58,16 @@ def get_door_pos(env):
 def get_door_status(env, x, y):
   obj = env.grid.get(x, y)
   return obj.is_open
+
+def seed_everything(seed):
+  random.seed(seed)
+  np.random.seed(seed)
+  os.environ['PYTHONHASHSEED'] = str(seed)
+  torch.manual_seed(seed)
+  torch.cuda.manual_seed(seed)
+  torch.backends.cudnn.deterministic = True
+
+
 
 
 def train(args, encoder_model=None):
