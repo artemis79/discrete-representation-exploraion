@@ -59,23 +59,26 @@ def get_door_status(env, x, y):
   obj = env.grid.get(x, y)
   return obj.is_open
 
-def seed_everything(seed):
+def seed_everything(env, seed):
   random.seed(seed)
   np.random.seed(seed)
   os.environ['PYTHONHASHSEED'] = str(seed)
   torch.manual_seed(seed)
   torch.cuda.manual_seed(seed)
   torch.backends.cudnn.deterministic = True
-
-
+  env.seed(seed)
 
 
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
+  seed_everything(env, args.seed)
+
   # env = FreezeOnDoneWrapper(env, max_count=1)
   act_space = env.action_space
   act_dim = act_space.n
   sample_obs = env.reset()
+  env.seed(args.seed)
+
   sample_obs = preprocess_obs([sample_obs])
 
   freeze_encoder = False
@@ -174,6 +177,7 @@ def train(args, encoder_model=None):
   # Rollout loop
 
   curr_obs = env.reset()
+  env.seed(args.seed)
   curr_obs = torch.from_numpy(curr_obs).float()
   # Batch next_obs, rewards, acts, gammas
   ep_rewards = []
@@ -293,6 +297,7 @@ def train(args, encoder_model=None):
             raise ValueError(f'Invalid env change type: {args.env_change_type}')
 
         curr_obs = env.reset()
+        env.seed(args.seed)
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
         run_stats['ep_reward'].append(np.sum(ep_rewards))

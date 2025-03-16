@@ -20,6 +20,7 @@ def make_argparser(parser=None):
     if parser is None:
         parser = argparse.ArgumentParser()
 
+    parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('-e', '--env_name', type=str, default='MiniGrid-MultiRoom-N2-S4-v0')
     parser.add_argument('-t', '--ae_model_type', type=str, default='ae')
     parser.add_argument('-v', '--ae_model_version', type=str, default='2')
