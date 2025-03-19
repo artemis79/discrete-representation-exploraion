@@ -296,7 +296,6 @@ def train(args, encoder_model=None):
           else:
             raise ValueError(f'Invalid env change type: {args.env_change_type}')
 
-        env.seed(args.seed)
         curr_obs = env.reset()
         curr_obs = torch.from_numpy(curr_obs).float()
         run_stats['ep_length'].append(len(ep_rewards))
