@@ -68,7 +68,13 @@ def seed_everything(env, seed):
   torch.cuda.manual_seed_all(seed)
   torch.backends.cudnn.deterministic = True
   env.seed(seed)
+  env.action_space.seed(seed)
+  env.observation_space.seed(seed)
 
+def seed_env(env, seed):
+  env.seed(seed)
+  env.action_space.seed(seed)
+  env.observation_space.seed(seed)
 
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
@@ -176,7 +182,7 @@ def train(args, encoder_model=None):
 
   # Rollout loop
 
-  env.seed(args.seed)
+  seed_env(env, args.seed)
   curr_obs = env.reset()
   curr_obs = torch.from_numpy(curr_obs).float()
   # Batch next_obs, rewards, acts, gammas
@@ -289,6 +295,7 @@ def train(args, encoder_model=None):
             next_obs, act, next_obs, batch_data['rewards'][-1], batch_data['gammas'][-1])
 
         if env_change or args.env_change_freq == 'episode':
+          print('choosing seeds')
           if args.env_change_type == 'random':
             env.seeds = [np.random.randint(0, 1000000)]
           elif args.env_change_type == 'next':
