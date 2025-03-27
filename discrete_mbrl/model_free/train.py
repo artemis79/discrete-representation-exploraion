@@ -24,7 +24,7 @@ def increment_counts(counts, state, act):
   state_np_arr = state.detach().cpu().numpy()[0]
   counts[:, :, act] = counts[:, :, act] + state_np_arr
 
-def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
+def calculate_intrinsic_reward(counts, state, act, num_act, agg_func_const = 0,beta=1):
   state_np_arr = state.detach().cpu().numpy()[0]
   n_s = 0
   n_a = 0
@@ -35,9 +35,8 @@ def calculate_intrinsic_reward(counts, state, act, num_act, beta=1):
     state_counts = np.sum(state_counts, axis=0)
 
     # Use softmax as aggregate function
-    w =  softmax(state_counts)
+    w =  softmax(-1 * agg_func_const * state_counts)
     n = np.dot(w, state_counts)
-    print(n, state_counts)
     # n = np.min(state_counts)
     n_s += n
     if a == act:
@@ -59,27 +58,8 @@ def get_door_status(env, x, y):
   obj = env.grid.get(x, y)
   return obj.is_open
 
-def seed_everything(env, seed):
-  random.seed(seed)
-  np.random.seed(seed)
-  os.environ['PYTHONHASHSEED'] = str(seed)
-  torch.manual_seed(seed)
-  torch.cuda.manual_seed(seed)
-  torch.cuda.manual_seed_all(seed)
-  torch.backends.cudnn.deterministic = True
-  env.seed(seed)
-  env.action_space.seed(seed)
-  env.observation_space.seed(seed)
-
-def seed_env(env, seed):
-  env.seed(seed)
-  env.action_space.seed(seed)
-  env.observation_space.seed(seed)
-
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
-  seed_everything(env, args.seed)
-
   # env = FreezeOnDoneWrapper(env, max_count=1)
   act_space = env.action_space
   act_dim = act_space.n
@@ -182,7 +162,6 @@ def train(args, encoder_model=None):
 
   # Rollout loop
 
-  seed_env(env, args.seed)
   curr_obs = env.reset()
   curr_obs = torch.from_numpy(curr_obs).float()
   # Batch next_obs, rewards, acts, gammas
@@ -259,7 +238,7 @@ def train(args, encoder_model=None):
 
       if args.ae_model_type == 'vqvae' and args.count and step >= args.rl_start_step:
         act_index = act.item()
-        r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.beta)
+        r_intrins = calculate_intrinsic_reward(counts+mid_counts, state, act_index, act_dim, args.agg_func_const, args.beta)
         reward = reward + r_intrins
 
 
