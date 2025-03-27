@@ -38,8 +38,6 @@
       "ae_model_type": "vqvae",
       "filter_size": 6,
       "codebook_size": 256,
-  
-      "beta": 0.01,
       "env_name": "minigrid-door-key-stochastic",
       "stochastic": "categorical"
     }
