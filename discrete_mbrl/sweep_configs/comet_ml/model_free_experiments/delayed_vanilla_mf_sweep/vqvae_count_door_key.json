@@ -1,7 +1,7 @@
 {
     "name": "Delayed RL Door Key | VQVAE | Best",
   
-    "project": "model-free-minigrid-v2",
+    "project": "model-free-minigrid-all-params",
   
     "command": "python model_free/train.py",
   
@@ -28,10 +28,10 @@
       "env_max_steps": 1000,
       "n_ae_updates": 8,
       "ppo_batch_size": 64,
-      "ppo_value_coef": 0.5,
       "ppo_iters": 10,
       "ppo_clip": 0.2,
       "rl_start_step": 500000,
+      "env_change_type": "next",
   
       "ae_model_type": "vqvae",
       "filter_size": 6,
@@ -42,11 +42,26 @@
 
       "beta": {
         "type": "discrete",
-        "values": [0.001, 0.01, 0.0001, 0]
+        "values": [0.0, 0.001, 0.01]
       }, 
       "learning_rate":{
         "type": "discrete",
-        "values": [0.00003, 0.003, 0.0003]
+        "values": [0.003, 0.0003, 0.00003]
+      },
+
+      "ppo_value_coef":{
+        "type": "discrete",
+        "values": [0.05, 0.5, 5, 50]
+      },
+
+      "ppo_entropy_coef":{
+        "type": "discrete",
+        "values": [0.0003, 0.003, 0.03, 0.3]
+      },
+
+      "agg_func_const":{
+        "type": "discrete",
+        "values": [0.0, 0.01, 0.1, 1, 10, 100]
       }
     }
   }
