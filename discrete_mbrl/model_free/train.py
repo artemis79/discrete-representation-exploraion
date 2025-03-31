@@ -85,7 +85,7 @@ def train(args, encoder_model=None):
   freeze_encoder = False
 
   ## Keep track of state visitations to calculate the entropy:
-  grid_visitations = np.zeros(env.width, env.height)
+  grid_visitations = np.zeros((env.width, env.height))
 
   # Load the encoder
   if encoder_model is None:
