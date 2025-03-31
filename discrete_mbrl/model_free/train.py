@@ -61,6 +61,7 @@ def get_door_status(env, x, y):
 def increment_visitation_count(env, grid_visitations):
   door_x, door_y = get_door_pos(env)
   grid_visitations[door_x, door_y] += 1
+  print(grid_visitations)
 
 
 def calculate_entropy(grid_visitations):
@@ -70,6 +71,7 @@ def calculate_entropy(grid_visitations):
   probs = probs[probs > 0]
   entropy = -np.sum(probs * np.log2(probs))
 
+  print(entropy)
   return entropy
 
 
@@ -239,7 +241,8 @@ def train(args, encoder_model=None):
       r_intrins = 0
 
       # Keep track of agent's location
-      increment_visitation_count(env, grid_visitations)
+      if step >= args.rl_start_step:
+        increment_visitation_count(env, grid_visitations)
 
       # Get the status of agent, door and key
       if args.log_pos and 'door' in args.env_name:
