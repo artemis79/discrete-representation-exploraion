@@ -16,7 +16,6 @@ parser.add_argument('-s', '--sweep_id', default=None)
 parser.add_argument('-c', '--count', type=int, default=1)
 parser.add_argument('-p', '--config', type=str, nargs='*', default=None)
 
-
 def run_sweep(sweep_id):
   if 'COMET_OPTIMIZER_ID' in os.environ:
     del os.environ['COMET_OPTIMIZER_ID']

@@ -58,6 +58,21 @@ def get_door_status(env, x, y):
   obj = env.grid.get(x, y)
   return obj.is_open
 
+def increment_visitation_count(env, grid_visitations):
+  door_x, door_y = get_door_pos(env)
+  grid_visitations[door_x, door_y] += 1
+
+
+def calculate_entropy(grid_visitations):
+  grid_visitations = grid_visitations.flatten()
+
+  probs = grid_visitations / np.sum(grid_visitations)
+  probs = probs[probs > 0]
+  entropy = -np.sum(probs * np.log2(probs))
+
+  return entropy
+
+
 def train(args, encoder_model=None):
   env = make_env(args.env_name, max_steps=args.env_max_steps)
   # env = FreezeOnDoneWrapper(env, max_count=1)
@@ -68,6 +83,9 @@ def train(args, encoder_model=None):
   sample_obs = preprocess_obs([sample_obs])
 
   freeze_encoder = False
+
+  ## Keep track of state visitations to calculate the entropy:
+  grid_visitations = np.zeros(env.width, env.height)
 
   # Load the encoder
   if encoder_model is None:
@@ -168,6 +186,8 @@ def train(args, encoder_model=None):
   ep_rewards = []
   ep_intrinsic_rewards = []
   ep_reward_plus = []
+  entropies = []
+
   n_batches = int(np.ceil(args.mf_steps / args.batch_size))
   step = 0
   episode = 0
@@ -218,6 +238,8 @@ def train(args, encoder_model=None):
       env_reward = reward
       r_intrins = 0
 
+      # Keep track of agent's location
+      increment_visitation_count(env, grid_visitations)
 
       # Get the status of agent, door and key
       if args.log_pos and 'door' in args.env_name:
@@ -289,6 +311,9 @@ def train(args, encoder_model=None):
         run_stats['ep_intr_reward'].append(np.sum(ep_intrinsic_rewards))
         run_stats['ep_reward_plus'].append(np.sum(ep_reward_plus))
         run_stats['ep_intrinsic_reward'].append(np.sum(ep_intrinsic_rewards))
+
+        entropy = calculate_entropy(grid_visitations)
+        run_stats['entropy'].append(entropy)
         
         # Compute score for crafter
         if 'crafter' in args.env_name.lower():
