@@ -59,9 +59,9 @@ def get_door_status(env, x, y):
   return obj.is_open
 
 def increment_visitation_count(env, grid_visitations):
-  door_x, door_y = get_door_pos(env)
-  print(door_x, door_y)
-  grid_visitations[door_x][door_y] += 1
+  agent_pos = env.agent_pos
+  print(agent_pos[0], agent_pos[1])
+  grid_visitations[agent_pos[0]][agent_pos[1]] += 1
   print(grid_visitations)
 
 
