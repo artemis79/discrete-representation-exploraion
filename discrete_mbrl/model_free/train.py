@@ -60,9 +60,7 @@ def get_door_status(env, x, y):
 
 def increment_visitation_count(env, grid_visitations):
   agent_pos = env.agent_pos
-  print(agent_pos[0], agent_pos[1])
   grid_visitations[agent_pos[0]][agent_pos[1]] += 1
-  print(grid_visitations)
 
 
 def calculate_entropy(grid_visitations):
