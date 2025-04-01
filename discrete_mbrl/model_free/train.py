@@ -68,9 +68,9 @@ def calculate_entropy(grid_visitations):
   grid_visitations = grid_visitations.flatten()
 
   probs = grid_visitations / np.sum(grid_visitations)
+  print(probs)
   probs = probs[probs > 0]
   entropy = -np.sum(probs * np.log2(probs))
-
   print(entropy)
   return entropy
 
