@@ -60,7 +60,8 @@ def get_door_status(env, x, y):
 
 def increment_visitation_count(env, grid_visitations):
   door_x, door_y = get_door_pos(env)
-  grid_visitations[door_x, door_y] += 1
+  print(door_x, door_y)
+  grid_visitations[door_x][door_y] += 1
   print(grid_visitations)
 
 
@@ -188,7 +189,6 @@ def train(args, encoder_model=None):
   ep_rewards = []
   ep_intrinsic_rewards = []
   ep_reward_plus = []
-  entropies = []
 
   n_batches = int(np.ceil(args.mf_steps / args.batch_size))
   step = 0
@@ -201,8 +201,6 @@ def train(args, encoder_model=None):
     batch_data = {k: [] for k in [
       'obs', 'states', 'next_obs', 'rewards', 'acts', 'gammas']}
     
-    
-        
     
     # ae_model.cpu()
     # policy.cpu()
@@ -317,6 +315,8 @@ def train(args, encoder_model=None):
 
         entropy = calculate_entropy(grid_visitations)
         run_stats['entropy'].append(entropy)
+        grid_visitations = np.zeros((env.width, env.height))
+
         
         # Compute score for crafter
         if 'crafter' in args.env_name.lower():
