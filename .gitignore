@@ -161,7 +161,8 @@ discrete_mbrl/wandb
 /figures
 /Data
 /discrete_mbrl/model_free/wandb
-/discrete_mbrl/analysis/comet_ml/notebooks/figures
+/discrete_mbrl/analysis/comet_ml/notebooks/figures/
+/discrete_mbrl/analysis/figures
 
 # Output files
 *.csv
