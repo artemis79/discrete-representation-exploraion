@@ -313,7 +313,7 @@ def train(args, encoder_model=None):
 
         entropy = calculate_entropy(grid_visitations)
         run_stats['entropy'].append(entropy)
-        grid_visitations = np.zeros((env.width, env.height))
+        # grid_visitations = np.zeros((env.width, env.height))
 
         
         # Compute score for crafter
