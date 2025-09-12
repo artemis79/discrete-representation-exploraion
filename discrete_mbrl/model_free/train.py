@@ -75,6 +75,11 @@ def calculate_entropy(grid_visitations):
 
 
 def train(args, encoder_model=None):
+  seed = args.seed
+
+  torch.manual_seed(seed)
+  np.random.seed(seed)
+
   env = make_env(args.env_name, max_steps=args.env_max_steps)
   # env = FreezeOnDoneWrapper(env, max_count=1)
   act_space = env.action_space
@@ -353,6 +358,7 @@ def train(args, encoder_model=None):
 
         log_stats(run_stats, step, args)
         run_stats = defaultdict(list)
+        grid_visitations = np.zeros((env.width, env.height))
 
         # Save model and generate sample reconstructions
         if step % (args.log_freq * args.checkpoint_freq) == 0:
@@ -416,8 +422,13 @@ def train(args, encoder_model=None):
 
 if __name__ == '__main__':
   # Parse args
+
   mf_arg_parser = make_mf_arg_parser()
   args = get_args(mf_arg_parser)
+
+  seed = args.seed
+  torch.manual_seed(seed)
+  np.random.seed(seed)
 
   if args.env_change_freq.isdecimal():
     args.env_change_freq = int(args.env_change_freq)
